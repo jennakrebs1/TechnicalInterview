@@ -1,0 +1,50 @@
+--Create a table called Books with 3 columns
+CREATE TABLE Books (
+	AuthorID int,
+	Title varchar(255),
+	Revision int
+);
+
+--Populate the table with 100 rows; follow pattern provided
+DECLARE @j int=0
+DECLARE @endUnicodeIndex int= 65
+DECLARE @numLetters int= 26
+DECLARE @totalRows int = 100
+DECLARE @titleLength int = 13
+WHILE(@j < 4)
+	BEGIN
+		DECLARE @currUnicodeIndex int =65
+		WHILE(@currUnicodeIndex < 91 AND ((@currUnicodeIndex-@endUnicodeIndex)+ (@j*@numLetters) < @totalRows))
+			BEGIN
+    			INSERT INTO Books(AuthorID, Title, Revision) VALUES ((@currUnicodeIndex-@endUnicodeIndex)+ (@j*@numLetters)+1, replicate(char(@currUnicodeIndex), @titleLength), 1);
+
+    			SET @currUnicodeIndex += 1
+			END
+		SET @j += 1
+	END
+
+--copy the data such that AuthorID and Title stay the same
+CREATE TABLE Books2 (
+	AuthorID int,
+	Title varchar(255),
+	Revision int
+);
+INSERT INTO Books2
+SELECT * FROM Books
+
+--set Revision to 2
+ UPDATE Books2
+SET Revision = 2;
+
+--Add a constraint to copied data table to enforce that each record is unique
+--if each authorID is unique, then each record is unique
+ALTER TABLE Books2
+ADD CONSTRAINT bookConstraint UNIQUE (AuthorID);
+
+--Remove second revision records for odd numbered AuthorIDs
+INSERT INTO Books SELECT * FROM Books2
+DELETE FROM Books WHERE (AuthorID %2 != 0 AND Revision = 2);
+SELECT* FROM Books ORDER BY AuthorID ASC
+
+-- QUERY database to display end results
+SELECT * FROM Books;
