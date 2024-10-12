@@ -1,0 +1,50 @@
+//This function assumes none of the parameters (i.e. title, author, pages, ISBN) are NULL
+//It also assumes the number of pages and the ISBN are each less than 1000 (i.e. less than 4 digits)
+function getBarcode(title, author, pages, isbn) {
+  let barcode = "";
+  barcode = barcode + title.substring(0, 3).toUpperCase() + "-" + author.substring(0, 3).toUpperCase() + "-";
+  numPages = pages / 10;
+  if (numPages < 1)
+  {
+    barcode = barcode +  "00" + pages + "-";
+  }
+  else if (numPages > 1 && num < 10)
+  {
+        barcode = barcode +  "0" + pages + "-";
+
+  }
+  else
+  {
+    barcode = barcode + pages + "-";
+  }
+  
+  isbnNum = isbn / 10;
+  
+  if (isbnNum < 1)
+  {
+    barcode = barcode +  "00" + isbn;
+  }
+  else if (isbnNum > 1 && isbnNum < 10)
+  {
+        barcode = barcode +  "0" + isbn;
+
+  }
+  else
+  {
+    barcode = barcode + isbn;
+  }
+  
+  return barcode;
+}
+
+//This method takes an array of record objects and returns a list of sorted barcodes for them
+//A record object has the following fields: title, author, pages, isbn
+function runner(arr)
+{
+  barcodearr = [];
+  for (let i = 0; i < arr.length; i++)
+  {
+    barcodearr[i] = getBarcode(arr[i].title, arr[i].author, arr[i].pages, arr[i].isbn);
+  }
+  return barcodearr.sort();
+}
